@@ -33,7 +33,7 @@ public class RabbitConfig {
      */
     @Bean
     ConnectionFactory connectionFactory() {
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost", 5562);
+        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost", 5672);
         cachingConnectionFactory.setUsername("guest");
         cachingConnectionFactory.setPassword("guest");
         return cachingConnectionFactory;
