@@ -1,7 +1,7 @@
 package com.cjafet.rabbitlistener.config;
 
 import com.cjafet.rabbitlistener.listener.RabbitMQMessageListener;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
@@ -19,9 +19,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    static final String topicExchangeName = "spring-boot-exchange";
-
-    static final String queueName = "spring-boot";
+    public static final String QUEUE_NAME = "AppQueue";
+    public static final String TOPIC_EXCHANGE = "TopicExchange";
+    public static final String ROUTING_KEY = "topic";
 
 
     /**
@@ -49,7 +49,38 @@ public class RabbitConfig {
      */
     @Bean
     Queue queue() {
-        return new Queue(queueName, false);
+        return new Queue(QUEUE_NAME, false);
+    }
+
+    /**
+     * Creates an Exchange in RabbitMQ
+     *
+     *
+     * @return      the exchange to be created in RabbitMQ
+     * @see         Exchange
+     */
+    @Bean
+    Exchange exchange() {
+        return ExchangeBuilder.topicExchange(TOPIC_EXCHANGE)
+                .durable(true)
+                .build();
+    }
+
+    /**
+     * Bind an Exchange to a Queue
+     *
+     *
+     * @return      the binding between an exchange and a queue
+     * @see         Exchange
+     */
+    @Bean
+    Binding binding() {
+        return BindingBuilder
+                .bind(queue())
+                .to(exchange())
+                .with(ROUTING_KEY)
+                .noargs();
+
     }
 
     /**
